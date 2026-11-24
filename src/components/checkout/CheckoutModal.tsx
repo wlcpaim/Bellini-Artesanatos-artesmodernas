@@ -101,33 +101,29 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     if (!createdOrder) return;
     const itemsList = createdOrder.items
       .map((it) => `• ${it.quantity}x ${it.productName} (R$ ${it.price.toFixed(2).replace('.', ',')})`)
-      .join('
-');
+      .join('\n');
 
-    const msg = `*NOVO PEDIDO BELLI ARTESANATOS* 🌸
-` +
-      `*Pedido:* ${createdOrder.orderNumber}
-` +
-      `*Cliente:* ${createdOrder.customerName}
-` +
-      `*WhatsApp:* ${createdOrder.customerPhone}
+    const lines = [
+      '*NOVO PEDIDO BELLI ARTESANATOS* 🌸',
+      `*Pedido:* ${createdOrder.orderNumber}`,
+      `*Cliente:* ${createdOrder.customerName}`,
+      `*WhatsApp:* ${createdOrder.customerPhone}`,
+      '',
+      '*Itens:*',
+      itemsList,
+      '',
+      `*Total:* R$ ${createdOrder.total.toFixed(2).replace('.', ',')}`,
+      `*Pagamento:* ${createdOrder.paymentMethod.toUpperCase()}`,
+      `*Entrega:* ${createdOrder.address.street}, ${createdOrder.address.number} - ${createdOrder.address.city}/${createdOrder.address.state}`,
+    ];
 
-` +
-      `*Itens:*
-${itemsList}
+    if (createdOrder.notes) {
+      lines.push(`*Observações:* ${createdOrder.notes}`);
+    }
+    lines.push('');
+    lines.push('Gostaria de confirmar meu pedido! ✨');
 
-` +
-      `*Total:* R$ ${createdOrder.total.toFixed(2).replace('.', ',')}
-` +
-      `*Pagamento:* ${createdOrder.paymentMethod.toUpperCase()}
-` +
-      `*Entrega:* ${createdOrder.address.street}, ${createdOrder.address.number} - ${createdOrder.address.city}/${createdOrder.address.state}
-` +
-      (createdOrder.notes ? `*Observações:* ${createdOrder.notes}
-` : '') +
-      `
-Gostaria de confirmar meu pedido! ✨`;
-
+    const msg = lines.join('\n');
     window.open(`https://wa.me/${config.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
